@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties, type FormEvent } from "react";
-import { z } from "zod";
+import { useEffect, useState, type CSSProperties } from "react";
+import { Mail } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Emblem } from "@/components/emblem";
 import { cn } from "@/lib/utils";
-import { LAUNCH_ISO } from "@/config/brand";
+import { LAUNCH_ISO, RSVP_NOTIFY_EMAIL } from "@/config/brand";
 
 type Theme = "dark" | "light";
 
@@ -40,8 +39,6 @@ const tiles = [
   { key: "seconds", label: "Sec" },
 ] as const;
 
-const emailSchema = z.email();
-
 function revealDelay(ms: number): CSSProperties {
   return { "--reveal-delay": `${ms}ms` } as CSSProperties;
 }
@@ -52,10 +49,6 @@ export function ComingSoonHero({ theme }: { theme: Theme }) {
   // (it depends on Date.now()), so render stays at the "00" placeholder
   // until this fills in, avoiding a hydration mismatch.
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<
-    "idle" | "submitting" | "success" | "error"
-  >("idle");
 
   useEffect(() => {
     const tick = () => setTimeLeft(getTimeLeft(target));
@@ -63,27 +56,6 @@ export function ComingSoonHero({ theme }: { theme: Theme }) {
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, [target]);
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const parsed = emailSchema.safeParse(email);
-    if (!parsed.success) {
-      setStatus("error");
-      return;
-    }
-    setStatus("submitting");
-    try {
-      const res = await fetch("/api/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: parsed.data }),
-      });
-      if (!res.ok) throw new Error("subscribe failed");
-      setStatus("success");
-    } catch {
-      setStatus("error");
-    }
-  }
 
   return (
     <section className="relative z-10 flex min-h-svh w-full flex-col items-center justify-center px-6 py-[clamp(4rem,12vh,10rem)] text-center sm:items-start sm:text-left">
@@ -133,33 +105,12 @@ export function ComingSoonHero({ theme }: { theme: Theme }) {
         </div>
 
         <div className="reveal mt-10" style={revealDelay(320)}>
-          {status === "success" ? (
-            <p className="text-ink-on-ground text-base italic">
-              Received. We will write when it is time.
-            </p>
-          ) : (
-            <form
-              onSubmit={handleSubmit}
-              className="mx-auto flex w-full max-w-sm flex-col gap-2 sm:mx-0 sm:flex-row"
-            >
-              <Input
-                type="email"
-                required
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                placeholder="your@address"
-                aria-label="Email address"
-              />
-              <Button type="submit" disabled={status === "submitting"}>
-                Request the invitation
-              </Button>
-            </form>
-          )}
-          {status === "error" && (
-            <p className="mt-2 text-sm text-[var(--signal)]">
-              Enter a valid email address.
-            </p>
-          )}
+          <Button asChild className="min-h-11 gap-2">
+            <a href={`mailto:${RSVP_NOTIFY_EMAIL}?subject=${encodeURIComponent("Project Rhapsody invitation request")}&body=${encodeURIComponent("Hello, I would like to request an invitation to Project Rhapsody.\n\nName:\nOrganization:\n")}`}>
+              <Mail className="size-4" aria-hidden="true" />
+              Request the invitation
+            </a>
+          </Button>
         </div>
       </div>
     </section>

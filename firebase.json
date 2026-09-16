@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "site": "project-rhapsody-eb1bc",
+    "public": "out",
+    "cleanUrls": true,
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "headers": [{ "source": "**/*.html", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] }],
+    "predeploy": ["npm run build:firebase"]
+  }
+}

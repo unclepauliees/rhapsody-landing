@@ -24,10 +24,6 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      # GitHub Pages is static-only — the /api/subscribe route needs a Node
-      # server and can't be exported. Stripping it here only affects this
-      # throwaway CI checkout, not the tracked repo.
-      - run: rm -rf src/app/api
       - run: npm run build
         env:
           GITHUB_PAGES: "true"

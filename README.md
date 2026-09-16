@@ -1,64 +1,37 @@
-# Rhapsody — pre-launch landing page
+# Rhapsody pre-launch landing page
 
-Single-route "coming soon" page announcing public reveal on **5 October 2026**
-and capturing a private-list email signup. Next.js 16 (App Router) + Tailwind
-v4 + shadcn, built around two 21st.dev registry components (`coming-soon-3`,
-`milky-way`) recolored to brand tokens — see `NOTES_components.md` for the
-full inventory of what was changed and why.
+Next.js static landing page announcing first light on 5 October 2026.
+The invitation button opens the visitor's email app with a message addressed
+to ProjectRhapsodyRSVP@theconcretegrp.com. Visitors must send that email;
+the website does not store submissions or require a backend.
 
-## Run locally
+## Development
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
-Open http://localhost:3000.
-
-## Build / verify
+## Verify and Deploy
 
 ```bash
 npm run lint
-npm run build
-npm run start   # production server, for Lighthouse / real perf numbers
+npm run build:firebase
+firebase deploy --only hosting --project project-rhapsody-eb1bc
 ```
 
-## Environment variables
+Firebase runs the static build automatically before deployment. The hosting
+configuration targets only the main site, `project-rhapsody-eb1bc`, and never
+the separate investor-deck site. No email-provider environment variables or
+paid signup services are needed.
 
-None are required to run the page — the email capture works out of the box,
-appending to `data/subscribers.jsonl` (gitignored). To also relay each
-signup to a real inbox, set:
+Default hosting URL: https://project-rhapsody-eb1bc.web.app
+Custom domain: https://project-rhapsody.com
 
-| Var | Value |
-|---|---|
-| `SUBSCRIBE_PROVIDER` | `resend` (only provider wired up so far) |
-| `SUBSCRIBE_API_KEY` | Resend API key |
-| `SUBSCRIBE_LIST_ID` | reserved for a future audience/list integration — not yet used |
+The custom domain requires its root A records to point to `199.36.158.100`.
+Keep Firebase verification TXT records and unrelated email DNS records intact.
 
-When `SUBSCRIBE_PROVIDER=resend` and `SUBSCRIBE_API_KEY` are set, `/api/subscribe`
-also sends a notification to `RSVP_NOTIFY_EMAIL` (`src/config/brand.ts`,
-currently `ProjectRhapsodyRSVP@theconcretegrp.com`). The JSONL append always
-happens regardless — it's the durable record.
+GitHub Pages also builds on pushes to main, using its repository base path.
+The invitation link works on both hosting destinations.
 
-## Deploy
-
-**Production (Vercel or any Node host):** this is a normal Next.js app —
-`vercel deploy`, or `npm run build && npm run start` behind any Node
-process manager. The `/api/subscribe` route needs a Node runtime.
-
-**External review (GitHub Pages):** `.github/workflows/deploy-pages.yml`
-builds a **static-export copy** on every push to `main` and deploys it to
-GitHub Pages. GitHub Pages can't run the `/api/subscribe` route handler (no
-Node server), so the workflow strips `src/app/api` before building — that
-only affects the CI checkout, not the tracked source. On the Pages copy the
-email form will show its error state on submit; everything else (theme
-toggle, countdown, milky-way background, responsive layout) works
-identically. Enable it once under **Settings → Pages → Source: GitHub
-Actions**.
-
-## Known deviations from spec
-
-See `NOTES_components.md` for the two documented cases where the brief's
-exact wording ("≤8px" parallax, "3–5% of particles") doesn't map cleanly
-onto the `milky-way` component's actual (3D-radian, continuous-shader)
-parameterization, and the closest-equivalent choice made instead.
+See `NOTES_components.md` for visual component implementation details.

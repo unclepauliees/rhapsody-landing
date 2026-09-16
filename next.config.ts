@@ -1,15 +1,13 @@
 import type { NextConfig } from "next";
 import path from "node:path";
 
-// GitHub Pages is static-only — no Node server, so /api/subscribe can't run
-// there. The Pages workflow (.github/workflows/deploy-pages.yml) strips
-// src/app/api before this build and sets GITHUB_PAGES=true so the export
-// works; the real deploy target (Vercel or any Node host) never sets this
-// and keeps the API route.
+// Invitations use email, so both hosting targets can serve a static export.
 const isGithubPagesExport = process.env.GITHUB_PAGES === "true";
 const repoName = "rhapsody-landing";
 
 const nextConfig: NextConfig = {
+  output: "export",
+  images: { unoptimized: true },
   // A stray package-lock.json in $HOME makes Turbopack misdetect the
   // workspace root as the home directory instead of this project.
   turbopack: {
