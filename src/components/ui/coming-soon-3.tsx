@@ -4,6 +4,7 @@ import { useEffect, useState, type CSSProperties } from "react";
 import { Mail } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { LiquidGlassSurface } from "@/components/ui/liquid-glass-button";
 import { Emblem } from "@/components/emblem";
 import { cn } from "@/lib/utils";
 import { LAUNCH_ISO, RSVP_NOTIFY_EMAIL } from "@/config/brand";
@@ -58,28 +59,39 @@ export function ComingSoonHero({ theme }: { theme: Theme }) {
   }, [target]);
 
   return (
-    <section className="relative z-10 flex min-h-svh w-full flex-col items-center justify-center px-6 py-[clamp(4rem,12vh,10rem)] text-center sm:items-start sm:text-left">
-      <div className="mx-auto w-full max-w-[720px] sm:mx-0">
-        <div className="reveal mx-auto sm:mx-0" style={revealDelay(0)}>
+    <section className="invitation-stage relative z-10 flex w-full items-center px-5 py-10 sm:px-10">
+      <div
+        className="invitation-glass w-full text-center"
+        onPointerMove={(event) => {
+          if (event.pointerType !== "mouse") return;
+          const bounds = event.currentTarget.getBoundingClientRect();
+          const offset = (event.clientX - bounds.left) / bounds.width;
+          event.currentTarget.style.setProperty("--reflection-x", `${30 + offset * 40}%`);
+        }}
+        onPointerLeave={(event) => event.currentTarget.style.removeProperty("--reflection-x")}
+      >
+        <LiquidGlassSurface />
+        <div className="reveal flex justify-center" style={revealDelay(0)}>
           <Emblem theme={theme} className="h-16 w-auto" />
         </div>
 
         <h1
-          className="reveal text-ink-on-ground mx-auto mt-4 text-[clamp(2.75rem,7vw,6.5rem)] leading-[1.05] font-normal sm:mx-0"
+          className="invitation-heading reveal text-ink-on-ground mx-auto mt-4 leading-[1.05] font-normal"
           style={{ maxWidth: "14ch", ...revealDelay(80) }}
         >
           The New Instrument
         </h1>
 
         <p
-          className="reveal text-ink-on-ground mx-auto mt-6 text-[clamp(1.1rem,1.6vw,1.35rem)] italic sm:mx-0"
-          style={{ maxWidth: "48ch", ...revealDelay(160) }}
+          className="invitation-copy reveal text-ink-on-ground mx-auto mt-6 italic"
+          style={revealDelay(160)}
         >
-          A studio above the weather. First light, 5 October 2026.
+          <span>A studio above the weather.</span>
+          <span>First light, 5 October 2026.</span>
         </p>
 
         <div
-          className="reveal mt-10 flex items-stretch justify-center sm:justify-start"
+          className="invitation-countdown reveal mt-8 flex items-stretch justify-center"
           style={revealDelay(240)}
           suppressHydrationWarning
         >
@@ -87,7 +99,7 @@ export function ComingSoonHero({ theme }: { theme: Theme }) {
             <div
               key={tile.key}
               className={cn(
-                "flex flex-col items-center px-4 sm:px-5",
+                "flex min-w-0 flex-1 flex-col items-center px-2 sm:px-5",
                 index > 0 && "border-l border-[var(--line)]/40",
               )}
             >
@@ -104,7 +116,7 @@ export function ComingSoonHero({ theme }: { theme: Theme }) {
           ))}
         </div>
 
-        <div className="reveal mt-10" style={revealDelay(320)}>
+        <div className="reveal mt-8" style={revealDelay(320)}>
           <Button asChild className="min-h-11 gap-2">
             <a href={`mailto:${RSVP_NOTIFY_EMAIL}?subject=${encodeURIComponent("Project Rhapsody invitation request")}&body=${encodeURIComponent("Hello, I would like to request an invitation to Project Rhapsody.\n\nName:\nOrganization:\n")}`}>
               <Mail className="size-4" aria-hidden="true" />
