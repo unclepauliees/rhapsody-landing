@@ -20,11 +20,19 @@ const spaceMono = Space_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(`https://${DOMAIN}`),
-  title: "Rhapsody — First light, 5 October 2026",
+  title: "Project Rhapsody | Coming Soon",
   description: "A studio above the weather. Request the invitation.",
   robots: { index: true, follow: true },
   openGraph: {
-    title: "Rhapsody — First light, 5 October 2026",
+    title: "Project Rhapsody | Coming Soon",
+    description: "A studio above the weather. Request the invitation.",
+    url: `https://${DOMAIN}`,
+    siteName: "Project Rhapsody",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Project Rhapsody | Coming Soon",
     description: "A studio above the weather. Request the invitation.",
   },
 };
