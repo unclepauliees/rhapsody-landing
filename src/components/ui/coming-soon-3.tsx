@@ -89,7 +89,7 @@ export function ComingSoonHero({ theme }: { theme: Theme }) {
     <section className="relative z-10 flex min-h-svh w-full flex-col items-center justify-center px-6 py-[clamp(4rem,12vh,10rem)] text-center sm:items-start sm:text-left">
       <div className="mx-auto w-full max-w-[720px] sm:mx-0">
         <div className="reveal mx-auto sm:mx-0" style={revealDelay(0)}>
-          <Emblem theme={theme} className="h-10 w-auto" />
+          <Emblem theme={theme} className="h-16 w-auto" />
         </div>
 
         <h1
