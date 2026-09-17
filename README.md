@@ -2,7 +2,7 @@
 
 Next.js static landing page announcing first light on 5 October 2026.
 The invitation button opens the visitor's email app with a message addressed
-to ProjectRhapsodyRSVP@theconcretegrp.com. Visitors must send that email;
+to kate@theconcretegrp.com. Visitors must send that email;
 the website does not store submissions or require a backend.
 
 ## Development
